@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nostalgia Crónica - Panel de Administración</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'EB Garamond', serif;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(90, 0, 0, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(70, 0, 0, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0000 0%, #1a0000 30%, #200000 60%, #2a0000 100%);
+            color: #e0d0c0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Textura de papel viejo sobre fondo oscuro */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(139, 0, 0, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 80% 50%, rgba(101, 0, 0, 0.03) 1px, transparent 1px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 0, 0, 0.01) 2px, rgba(139, 0, 0, 0.01) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(101, 0, 0, 0.01) 2px, rgba(101, 0, 0, 0.01) 4px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Manchas de envejecimiento rojizas */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 10% 10%, rgba(139, 0, 0, 0.08) 10%, transparent 20%),
+                radial-gradient(ellipse at 90% 20%, rgba(101, 0, 0, 0.06) 8%, transparent 18%),
+                radial-gradient(ellipse at 20% 90%, rgba(139, 0, 0, 0.05) 12%, transparent 25%),
+                radial-gradient(ellipse at 80% 80%, rgba(101, 0, 0, 0.04) 15%, transparent 30%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Encabezado estilo periódico vintage */
+        .newspaper-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            background: 
+                linear-gradient(135deg, rgba(20, 0, 0, 0.9), rgba(40, 0, 0, 0.8)),
+                repeating-linear-gradient(45deg, transparent, transparent 1px, rgba(139, 0, 0, 0.02) 1px, rgba(139, 0, 0, 0.02) 2px);
+            border: 3px double #800000;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.5),
+                inset 0 0 20px rgba(139, 0, 0, 0.1);
+        }
+
+        .newspaper-date {
+            font-size: 0.9em;
+            color: #a05252;
+            margin-bottom: 5px;
+            font-style: italic;
+        }
+
+        .main-title {
+            font-family: 'EB Garamond', serif;
+            font-size: 4.5em;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(200, 0, 0, 0.7), 3px 3px 5px rgba(0,0,0,0.5);
+            letter-spacing: 4px;
+            margin: 20px 0;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2em;
+            color: #d4a5a5;
+            font-weight: 500;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        .ornamental-line {
+            height: 3px;
+            background: linear-gradient(to right, transparent, #800000 20%, #a00000 50%, #800000 80%, transparent);
+            margin: 25px auto;
+            width: 350px;
+            position: relative;
+        }
+
+        .ornamental-line::before,
+        .ornamental-line::after {
+            content: '❖';
+            position: absolute;
+            top: -12px;
+            color: #a00000;
+            font-size: 1.5em;
+            text-shadow: 0 0 5px rgba(200, 0, 0, 0.5);
+        }
+
+        .ornamental-line::before {
+            left: -20px;
+        }
+
+        .ornamental-line::after {
+            right: -20px;
+        }
+
+        /* Categorías */
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 12px 25px;
+            background: 
+                linear-gradient(135deg, rgba(40, 0, 0, 0.8), rgba(60, 0, 0, 0.7)),
+                repeating-linear-gradient(45deg, transparent, transparent 1px, rgba(139, 0, 0, 0.05) 1px, rgba(139, 0, 0, 0.05) 2px);
+            border: 2px solid #800000;
+            border-radius: 30px;
+            color: #e0c0c0;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: 
+                linear-gradient(135deg, rgba(100, 0, 0, 0.9), rgba(80, 0, 0, 0.8));
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+            color: #ffffff;
+        }
+
+        /* Rosa marchita realista */
+        .withered-rose {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.6s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 0 5px rgba(200, 0, 0, 0.5));
+        }
+
+        .withered-rose:hover {
+            opacity: 0.9;
+            transform: scale(1.15) rotate(-5deg);
+            filter: drop-shadow(0 0 10px rgba(200, 0, 0, 0.7));
+        }
+
+        .rose-icon {
+            width: 60px;
+            height: 60px;
+            background: 
+                radial-gradient(circle at 30% 40%, #5d2329, #4a1a1f 40%, #3a1015 70%);
+            clip-path: path('M30,5 C35,0 45,0 50,5 C55,0 65,0 70,5 C75,15 75,25 70,35 C65,45 55,55 50,60 C45,55 35,45 30,35 C25,25 25,15 30,5 Z');
+            position: relative;
+            transform: rotate(-20deg);
+        }
+
+        .rose-icon::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background: 
+                radial-gradient(circle at 40% 50%, #4a1a1f, #3a1015 60%);
+            clip-path: path('M20,0 C25,0 30,5 30,10 C30,15 25,20 20,20 C15,20 10,15 10,10 C10,5 15,0 20,0 Z');
+            opacity: 0.8;
+        }
+
+        .rose-icon::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            background: #3a1015;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+        /* Tarjetas de escritos estilo carta antigua sobre fondo oscuro */
+        .writings-grid {
+            display: grid;
+            gap: 50px;
+            margin-top: 40px;
+        }
+
+        .writing-card {
+            background: 
+                linear-gradient(135deg, rgba(30, 0, 0, 0.9), rgba(50, 0, 0, 0.85)),
+                repeating-linear-gradient(45deg, transparent, transparent 1px, rgba(139, 0, 0, 0.03) 1px, rgba(139, 0, 0, 0.03) 2px);
+            border: 2px solid #800000;
+            border-radius: 15px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.5),
+                inset 0 0 30px rgba(139, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .writing-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(139, 0, 0, 0.05) 20%, transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(101, 0, 0, 0.03) 15%, transparent 35%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .writing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.7),
+                inset 0 0 40px rgba(139, 0, 0, 0.15);
+        }
+
+        .writing-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Decoración de esquinas */
+        .writing-card::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            border-top: 3px solid #800000;
+            border-left: 3px solid #800000;
+            border-radius: 5px 0 0 0;
+            z-index: 1;
+        }
+
+        .corner-decoration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            border-bottom: 3px solid #800000;
+            border-right: 3px solid #800000;
+            border-radius: 0 0 5px 0;
+        }
+
+        .writing-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8em;
+            color: #e0b0b0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .writing-category {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: rgba(160, 0, 0, 0.7);
+            color: #f0e0e0;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+        }
+
+        .writing-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #800000;
+            font-size: 1em;
+            color: #a05252;
+            font-style: italic;
+        }
+
+        .writing-source {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3em;
+            color: #d4a5a5;
+        }
+
+        .writing-date {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .writing-image {
+            width: 100%;
+            max-width: 550px;
+            margin: 30px auto;
+            display: block;
+            border-radius: 10px;
+            filter: sepia(50%) contrast(1.1) brightness(0.8) saturate(0.9) hue-rotate(5deg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 5px solid #500000;
+            position: relative;
+        }
+
+        .writing-content {
+            font-size: 1.2em;
+            line-height: 2;
+            text-align: justify;
+            color: #e0d0c0;
+            font-family: 'EB Garamond', serif;
+            position: relative;
+        }
+
+        .writing-content p {
+            margin-bottom: 2em;
+            text-indent: 2.5em;
+            position: relative;
+        }
+
+        .writing-content p:first-child::first-letter {
+            font-size: 4em;
+            font-family: 'Dancing Script', cursive;
+            float: left;
+            line-height: 0.8;
+            margin: 0.1em 0.1em 0 0;
+            color: #d4a5a5;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Panel de administración estilo escritorio vintage */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at center, rgba(0,0,0,0.9), rgba(0,0,0,0.95)),
+                linear-gradient(45deg, rgba(139, 0, 0, 0.1), rgba(101, 0, 0, 0.1));
+            z-index: 1000;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .admin-content {
+            max-width: 900px;
+            margin: 40px auto;
+            background: 
+                linear-gradient(135deg, #1a0000, #300000),
+                repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(139, 0, 0, 0.02) 2px, rgba(139, 0, 0, 0.02) 4px);
+            border: 5px double #800000;
+            border-radius: 20px;
+            padding: 50px;
+            position: relative;
+            box-shadow: 
+                0 30px 80px rgba(0,0,0,0.8),
+                inset 0 0 50px rgba(139, 0, 0, 0.1);
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .admin-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5em;
+            color: #e0b0b0;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .admin-subtitle {
+            color: #d4a5a5;
+            font-style: italic;
+            font-size: 1.3em;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            background: linear-gradient(135deg, #a00000, #800000);
+            border: 2px solid #600000;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: #f4e8d0;
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .close-btn:hover {
+            background: linear-gradient(135deg, #800000, #a00000);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+        }
+
+        /* Nuevas pestañas de administración */
+        .admin-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .admin-tab {
+            padding: 15px 40px;
+            background: 
+                linear-gradient(135deg, rgba(40, 0, 0, 0.8), rgba(60, 0, 0, 0.7)),
+                repeating-linear-gradient(45deg, transparent, transparent 1px, rgba(139, 0, 0, 0.05) 1px, rgba(139, 0, 0, 0.05) 2px);
+            border: 2px solid #800000;
+            border-radius: 30px;
+            color: #e0c0c0;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .admin-tab:hover, .admin-tab.active {
+            background: 
+                linear-gradient(135deg, rgba(100, 0, 0, 0.9), rgba(80, 0, 0, 0.8));
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+            color: #ffffff;
+        }
+
+        /* Sección de edición */
+        .edit-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .edit-list {
+            background: 
+                linear-gradient(135deg, rgba(30, 0, 0, 0.7), rgba(40, 0, 0, 0.5)),
+                repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(139, 0, 0, 0.03) 2px, rgba(139, 0, 0, 0.03) 4px);
+            border: 2px solid #800000;
+            border-radius: 15px;
+            padding: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .edit-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            background: rgba(20, 0, 0, 0.4);
+            border-radius: 10px;
+            border: 1px solid #600000;
+            transition: all 0.3s ease;
+        }
+
+        .edit-item:hover {
+            background: rgba(40, 0, 0, 0.6);
+            transform: translateX(5px);
+        }
+
+        .edit-item-title {
+            font-family: 'EB Garamond', serif;
+            font-size: 1.3em;
+            color: #e0b0b0;
+            flex-grow: 1;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #800000;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, rgba(0, 60, 0, 0.6), rgba(0, 40, 0, 0.5));
+            color: #c0e0c0;
+        }
+
+        .edit-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 80, 0, 0.7), rgba(0, 60, 0, 0.6));
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, rgba(100, 0, 0, 0.6), rgba(80, 0, 0, 0.5));
+            color: #e0c0c0;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, rgba(140, 0, 0, 0.8), rgba(100, 0, 0, 0.7));
+        }
+
+        /* Formulario */
+        .form-group {
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 12px;
+            color: #e0b0b0;
+            font-weight: 600;
+            font-size: 1.3em;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            background: 
+                linear-gradient(135deg, rgba(40, 0, 0, 0.8), rgba(50, 0, 0, 0.7)),
+                repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(139, 0, 0, 0.03) 1px, rgba(139, 0, 0, 0.03) 2px);
+            border: 2px solid #800000;
+            border-radius: 10px;
+            color: #e0d0c0;
+            font-family: 'EB Garamond', serif;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #a00000;
+            background: 
+                linear-gradient(135deg, rgba(50, 0, 0, 0.9), rgba(60, 0, 0, 0.8)),
+                repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(139, 0, 0, 0.05) 1px, rgba(139, 0, 0, 0.05) 2px);
+            box-shadow: 
+                inset 0 2px 8px rgba(0,0,0,0.4),
+                0 0 0 3px rgba(160, 0, 0, 0.3);
+        }
+
+        .form-textarea {
+            min-height: 300px;
+            resize: vertical;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .image-preview {
+            max-width: 250px;
+            max-height: 250px;
+            margin-top: 15px;
+            border-radius: 8px;
+            filter: sepia(30%) contrast(1.1) brightness(0.8) saturate(1.0);
+            border: 3px solid #800000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #a00000, #800000, #a00000);
+            color: #f4e8d0;
+            border: 2px solid #600000;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #800000, #a00000, #800000);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .btn-secondary {
+            background: 
+                linear-gradient(135deg, rgba(40, 0, 0, 0.8), rgba(50, 0, 0, 0.7)),
+                repeating-linear-gradient(45deg, transparent, transparent 1px, rgba(139, 0, 0, 0.05) 1px, rgba(139, 0, 0, 0.05) 2px);
+            color: #e0b0b0;
+            border: 2px solid #800000;
+        }
+
+        .btn-secondary:hover {
+            background: 
+                linear-gradient(135deg, rgba(50, 0, 0, 0.9), rgba(60, 0, 0, 0.8)),
+                repeating-linear-gradient(45deg, transparent, transparent 1px, rgba(139, 0, 0, 0.08) 1px, rgba(139, 0, 0, 0.08) 2px);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            color: #a05252;
+            font-style: italic;
+            background: 
+                linear-gradient(135deg, rgba(30, 0, 0, 0.7), rgba(40, 0, 0, 0.5)),
+                repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(139, 0, 0, 0.03) 2px, rgba(139, 0, 0, 0.03) 4px);
+            border: 2px dashed #800000;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .empty-state-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #d4a5a5;
+        }
+
+        .empty-state-subtext {
+            font-family: 'EB Garamond', serif;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        /* Efectos de pétalos flotantes rojos */
+        .petal {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #a00000;
+            border-radius: 0 100% 0 100%;
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .book-icon {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 2em;
+            color: #800000;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .old-book-stack {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 80px;
+            background: 
+                linear-gradient(135deg, #600000, #800000, #a00000);
+            border-radius: 3px;
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.4),
+                inset 0 0 10px rgba(0,0,0,0.5);
+            transform: rotate(5deg);
+            z-index: -1;
+        }
+
+        .old-book-stack::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            width: 50px;
+            height: 60px;
+            background: 
+                linear-gradient(135deg, #500000, #700000, #800000);
+            border-radius: 2px;
+            box-shadow: 
+                inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .old-book-stack::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            width: 40px;
+            height: 50px;
+            background: 
+                linear-gradient(135deg, #800000, #a00000);
+            border-radius: 2px;
+            box-shadow: 
+                inset 0 0 10px rgba(0,0,0,0.4);
+        }
+
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-content {
+            background: 
+                linear-gradient(135deg, #200000, #400000);
+            padding: 40px;
+            border-radius: 15px;
+            border: 3px double #800000;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+        }
+
+        .password-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            color: #e0b0b0;
+            margin-bottom: 20px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #800000;
+            border-radius: 8px;
+            font-family: 'EB Garamond', serif;
+            font-size: 1.2em;
+            background: rgba(30, 0, 0, 0.7);
+            color: #e0d0c0;
+        }
+
+        .password-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #a00000, #800000);
+            color: #f4e8d0;
+            border: none;
+            border-radius: 8px;
+            font-family: 'EB Garamond', serif;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .password-btn:hover {
+            background: linear-gradient(135deg, #800000, #a00000);
+            transform: translateY(-3px);
+        }
+
+        /* Instagram link */
+        .instagram-link {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .instagram-link:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 6px 20px rgba(220, 39, 67, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.8em;
+            }
+            
+            .withered-rose {
+                right: 10px;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .admin-content {
+                margin: 20px;
+                padding: 30px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .writing-card {
+                padding: 25px;
+            }
+            
+            .categories {
+                gap: 15px;
+            }
+            
+            .category-btn {
+                padding: 10px 15px;
+                font-size: 1.2em;
+                min-width: 120px;
+            }
+            
+            .instagram-link {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+            
+            .admin-tab {
+                padding: 12px 25px;
+                font-size: 1.3em;
+            }
+            
+            .edit-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Elementos decorativos -->
+    <div class="book-icon">
+        <i class="fas fa-book"></i>
+    </div>
+    <div class="old-book-stack"></div>
+    
+    <!-- Pétalos flotantes rojos -->
+    <div class="petal" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="petal" style="left: 20%; animation-delay: 3s;"></div>
+    <div class="petal" style="left: 30%; animation-delay: 6s;"></div>
+    <div class="petal" style="left: 40%; animation-delay: 9s;"></div>
+    <div class="petal" style="left: 50%; animation-delay: 12s;"></div>
+    <div class="petal" style="left: 60%; animation-delay: 2s;"></div>
+    <div class="petal" style="left: 70%; animation-delay: 5s;"></div>
+    <div class="petal" style="left: 80%; animation-delay: 8s;"></div>
+    <div class="petal" style="left: 90%; animation-delay: 11s;"></div>
+    
+    <!-- Instagram Link -->
+    <a href="https://www.instagram.com/s4dbut_tru3/?utm_source=ig_web_button_share_sheet" class="instagram-link" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+    
+    <div class="container">
+        <header class="newspaper-header">
+            <div class="newspaper-date" id="currentDate"></div>
+            <h1 class="main-title">Nostalgia Crónica</h1>
+            <p class="subtitle">Palabras extraviadas entre humo, vino y madrugadas</p>
+            <div class="ornamental-line"></div>
+            
+            <div class="withered-rose" onclick="showPasswordModal()" title="El jardín secreto de las memorias">
+                <div class="rose-icon"></div>
+            </div>
+        </header>
+
+        <!-- Categorías -->
+        <div class="categories">
+            <div class="category-btn active" data-category="all">Todas</div>
+            <div class="category-btn" data-category="poemas">Poemas</div>
+            <div class="category-btn" data-category="cuentos">Cuentos</div>
+            <div class="category-btn" data-category="textos">Textos</div>
+        </div>
+
+        <main class="writings-grid" id="writingsContainer">
+            <!-- Las cartas se cargarán aquí dinámicamente -->
+        </main>
+    </div>
+
+    <!-- Modal de contraseña -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-content">
+            <h2 class="password-title">Acceso al Scriptorium</h2>
+            <p>Para entrar al jardín secreto de las memorias, se requiere la llave correcta</p>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Escribe la contraseña...">
+            <button class="password-btn" onclick="checkPassword()">Desbloquear Memorias</button>
+        </div>
+    </div>
+
+    <!-- Panel de Administración -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-content">
+            <button class="close-btn" onclick="toggleAdminPanel()">×</button>
+            
+            <div class="admin-header">
+                <h2 class="admin-title">El Scriptorium del Alma</h2>
+                <p class="admin-subtitle">Donde las palabras se vuelven eternas como tinta sobre pergamino</p>
+            </div>
+            
+            <!-- Pestañas de administración -->
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="create" onclick="switchAdminTab('create')">Crear</button>
+                <button class="admin-tab" data-tab="edit" onclick="switchAdminTab('edit')">Editar</button>
+            </div>
+            
+            <!-- Formulario de creación/edición -->
+            <form id="writingForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Título de la Memoria</label>
+                    <input type="text" class="form-input" id="writingTitle" placeholder="Un susurro del corazón..." required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Fuente de Inspiración</label>
+                    <input type="text" class="form-input" id="writingSource" placeholder="De donde nace esta confesión...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Categoría</label>
+                    <select class="form-select" id="writingCategory" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="poemas">Poemas</option>
+                        <option value="cuentos">Cuentos</option>
+                        <option value="textos">Textos</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Imagen Evocadora (URL)</label>
+                    <input type="url" class="form-input" id="writingImage" placeholder="https://ejemplo.com/imagen.jpg" onchange="previewImage()">
+                    <img id="imagePreview" class="image-preview" style="display: none;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contenido del Corazón</label>
+                    <textarea class="form-textarea" id="writingContent" placeholder="Querido diario de mis desventuras...
+
+Hoy las palabras pesan como plomo en mi pecho,
+cada letra una lágrima que se niega a caer,
+cada párrafo un suspiro que busca liberarse
+de esta jaula de costillas que ya no puede más...
+
+Porque hay amores que duelen
+incluso en el recuerdo,
+y hay silencios que gritan
+más fuerte que las tempestades..." required></textarea>
+                </div>
+                
+                <!-- Campo oculto para ID cuando se está editando -->
+                <input type="hidden" id="writingId">
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        Sellar en la Eternidad
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                        Limpiar el Pergamino
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelEdit()" style="display: none;" id="cancelEditBtn">
+                        Cancelar Edición
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Sección de edición -->
+            <div class="edit-section" id="editSection">
+                <div class="form-group">
+                    <label class="form-label">Editar Escritos Existente</label>
+                    <div class="edit-list" id="editList">
+                        <!-- Los escritos se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para cartas con categorías
+        let writings = [
+            {
+                id: 1,
+                title: "Aquel Verano en la Costa",
+                source: "Recuerdos de juventud",
+                category: "textos",
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000",
+                content: "Querida Clara,\n\nHan pasado ya diecisiete veranos desde aquel julio en la costa, pero aún puedo sentir la brisa salada en mi rostro cuando cierro los ojos. Aquellas tardes infinitas construyendo castillos de arena que la marea se llevaría al anochecer, como se llevó nuestros sueños...\n\nRecuerdo tu risa cuando las olas nos sorprendían los tobillos, ese vestido blanco que flotaba como una bandera de tregua en medio de nuestra guerra particular. Lo guardo todo aquí, en el cofre de mis memorias, junto al caracol que me regalaste la última mañana.\n\nA veces me pregunto qué habría sido de nosotros si hubieras subido a aquel tren. Si hubieras elegido quedarte en lugar de seguir a tus padres a la ciudad. Si tan solo...\n\nPero el tiempo es un río que no fluye hacia atrás, y estas palabras nunca cruzarán la distancia que nos separa. Descansa en paz, mi amiga de verano.",
+                date: "15 de julio, 2023"
+            },
+            {
+                id: 2,
+                title: "La Carta que Nunca Envié",
+                source: "Un amor de juventud",
+                category: "cuentos",
+                image: "https://images.unsplash.com/photo-1552083375-1447ce886485?q=80&w=1000",
+                content: "Mi querido Eduardo,\n\nHan pasado veinte años desde aquella tarde de septiembre en que te vi por última vez. Veinte años y aún conservo esta carta amarillenta que nunca tuve el valor de enviar.\n\nRecuerdo cómo tu mirada iluminaba la biblioteca cada viernes cuando venías a buscar aquellos libros de poesía que tanto amabas. Yo fingía ocuparme de los catálogos mientras te observaba entre los estantes, admirando la forma en que tus dedos acariciaban los lomos de los volúmenes como quien toca un instrumento sagrado.\n\nCuando me dijiste que partirías a estudiar a París, mi mundo se deshizo en silencio. Quise gritarte que te amaba, que esperaría tu regreso, que... Pero solo atiné a sonreír y desearte buena suerte. La cobardía es la compañera fiel de los corazones tímidos.\n\nHoy, al encontrar estas palabras olvidadas entre las páginas de tu libro favorito, he decidido liberarlas al viento. Quizás algún día, en alguna librería de París, sientas un leve escalofrío al pasar junto a un estante de poesía. Seré yo, enviándote por fin este adiós que nunca fue.",
+                date: "3 de marzo, 2024"
+            },
+            {
+                id: 3,
+                title: "Al Padre que no Conocí",
+                source: "Reflexiones en la madurez",
+                category: "poemas",
+                image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1000",
+                content: "Querido padre,\n\nHoy cumplo cuarenta y cinco años, la misma edad que tenías cuando desapareciste de nuestras vidas. Durante décadas guardé tu fotografía en mi cartera, ese rostro serio con sombrero que siempre me pareció un extraño.\n\nMamá nunca quiso hablar de ti. Solo sabía que te fuiste una mañana de invierno con la promesa de volver, llevándote únicamente una maleta y todas nuestras ilusiones. Yo tenía cinco años, y mi mayor tesoro era el silbato de marinero que me regalaste en mi cumpleaños.\n\nAhora que soy padre, comprendo las complejidades del amor y el deber. Quizás tuviste tus razones, quizás fuiste víctima de circunstancias que nunca conoceré. Ya no guardo rencor, solo una curiosidad serena por la otra mitad de mi sangre.\n\nEsta carta es mi manera de decirte que está bien. Que te libero de la culpa que quizás cargaste todos estos años. Y que si alguna vez piensas en mí, sepas que encontré la paz que tal vez tú nunca pudiste alcanzar.",
+                date: "12 de noviembre, 2023"
+            },
+            {
+                id: 4,
+                title: "Ecos en la Niebla",
+                source: "Sueños recurrentes",
+                category: "poemas",
+                image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1000",
+                content: "En la niebla de octubre,\ntus pasos resuenan\ncomo campanas lejanas\nen un valle olvidado.\n\nCada hoja que cae\nes una palabra no dicha,\nun adiós que se congela\nen mis labios temblorosos.\n\nEl viento lleva tu nombre\nentre los árboles desnudos,\nmientras la bruma teje\nel sudario de nuestros recuerdos.\n\n¿Quién soy sin tu eco?\nTan solo una sombra\nque busca su silueta\nen los espejos del alba.",
+                date: "28 de octubre, 2023"
+            }
+        ];
+
+        // Variables para estado de edición
+        let isEditing = false;
+        let currentEditId = null;
+
+        // Inicializar la página
+        window.addEventListener('DOMContentLoaded', function() {
+            initializeDate();
+            displayWritings();
+            setupCategoryFilter();
+        });
+
+        // Inicializar fecha actual
+        function initializeDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = 
+                now.toLocaleDateString('es-ES', options);
+        }
+
+        function showPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'flex';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === 'Samaleca.1907') {
+                document.getElementById('passwordModal').style.display = 'none';
+                toggleAdminPanel();
+            } else {
+                alert('Contraseña incorrecta. Las memorias permanecen ocultas.');
+            }
+        }
+
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            const isVisible = panel.style.display === 'block';
+            panel.style.display = isVisible ? 'none' : 'block';
+            
+            if (!isVisible) {
+                // Mostrar la pestaña de creación por defecto
+                switchAdminTab('create');
+                // Enfocar el primer campo cuando se abre
+                setTimeout(() => {
+                    document.getElementById('writingTitle').focus();
+                }, 100);
+            }
+        }
+
+        function switchAdminTab(tabName) {
+            // Actualizar botones de pestaña
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            
+            // Mostrar/ocultar secciones
+            if (tabName === 'create') {
+                document.getElementById('editSection').style.display = 'none';
+                document.getElementById('writingForm').style.display = 'block';
+            } else {
+                document.getElementById('writingForm').style.display = 'none';
+                document.getElementById('editSection').style.display = 'block';
+                loadEditList();
+            }
+        }
+
+        function previewImage() {
+            const imageUrl = document.getElementById('writingImage').value;
+            const preview = document.getElementById('imagePreview');
+            
+            if (imageUrl) {
+                preview.src = imageUrl;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('writingForm').reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('writingId').value = '';
+            isEditing = false;
+            document.getElementById('submitBtn').textContent = 'Sellar en la Eternidad';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        function cancelEdit() {
+            clearForm();
+            switchAdminTab('create');
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            // Obtener datos del formulario
+            const id = document.getElementById('writingId').value;
+            const title = document.getElementById('writingTitle').value;
+            const source = document.getElementById('writingSource').value || 'Anónimo';
+            const category = document.getElementById('writingCategory').value;
+            const image = document.getElementById('writingImage').value || '';
+            const content = document.getElementById('writingContent').value;
+            const date = new Date().toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            if (isEditing && id) {
+                // Actualizar escrito existente
+                const index = writings.findIndex(w => w.id == id);
+                if (index !== -1) {
+                    writings[index] = {
+                        id: parseInt(id),
+                        title,
+                        source,
+                        category,
+                        image,
+                        content,
+                        date: writings[index].date // Mantener la fecha original
+                    };
+                }
+            } else {
+                // Crear nueva carta
+                const newWriting = {
+                    id: Date.now(),
+                    title,
+                    source,
+                    category,
+                    image,
+                    content,
+                    date
+                };
+                
+                // Añadir a la colección
+                writings.unshift(newWriting);
+            }
+            
+            // Actualizar la vista
+            displayWritings();
+            
+            // Volver al modo creación
+            clearForm();
+            
+            // Mostrar confirmación visual
+            showConfirmation('La carta ha sido guardada en los anales del tiempo.');
+            
+            // Cambiar a la vista principal
+            switchAdminTab('create');
+        }
+
+        function showConfirmation(message) {
+            const confirmation = document.createElement('div');
+            confirmation.textContent = message;
+            confirmation.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #a00000, #800000);
+                color: #f4e8d0;
+                padding: 15px 30px;
+                border-radius: 30px;
+                font-family: 'Dancing Script', cursive;
+                font-size: 1.5em;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+                z-index: 2000;
+                animation: fadeInOut 3s ease;
+            `;
+            
+            document.body.appendChild(confirmation);
+            
+            setTimeout(() => {
+                confirmation.remove();
+            }, 3000);
+        }
+
+        function deleteWriting(id) {
+            if (confirm('¿Borrar esta carta para siempre? Las palabras se perderán en el viento...')) {
+                writings = writings.filter(writing => writing.id !== id);
+                displayWritings();
+                loadEditList();
+                showConfirmation('La carta ha sido borrada de los anales del tiempo.');
+            }
+        }
+
+        function setupCategoryFilter() {
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover clase activa de todos los botones
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // Agregar clase activa al botón clickeado
+                    this.classList.add('active');
+                    
+                    // Filtrar escritos por categoría
+                    const category = this.getAttribute('data-category');
+                    displayWritings(category);
+                });
+            });
+        }
+
+        function displayWritings(category = 'all') {
+            const container = document.getElementById('writingsContainer');
+            let filteredWritings = writings;
+            
+            if (category !== 'all') {
+                filteredWritings = writings.filter(writing => writing.category === category);
+            }
+            
+            if (filteredWritings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-text">El pergamino aguarda en silencio</div>
+                        <div class="empty-state-subtext">
+                            Las plumas descansan junto al tintero,<br>
+                            esperando que las memorias cobren vida<br>
+                            en estas páginas amarillentas del tiempo
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            filteredWritings.forEach(writing => {
+                const writingElement = document.createElement('div');
+                writingElement.className = 'writing-card';
+                writingElement.innerHTML = `
+                    <h2 class="writing-title">${writing.title}
+                        <span class="writing-category">${writing.category.charAt(0).toUpperCase() + writing.category.slice(1)}</span>
+                    </h2>
+                    <div class="writing-meta">
+                        <span class="writing-source">${writing.source}</span>
+                        <span class="writing-date">${writing.date}</span>
+                    </div>
+                    ${writing.image ? `<img src="${writing.image}" alt="${writing.title}" class="writing-image">` : ''}
+                    <div class="writing-content">
+                        <p>${writing.content.replace(/\n\n/g, '</p><p>')}</p>
+                    </div>
+                    <div class="corner-decoration"></div>
+                `;
+                
+                container.appendChild(writingElement);
+            });
+        }
+
+        function loadEditList() {
+            const editList = document.getElementById('editList');
+            
+            if (writings.length === 0) {
+                editList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-text">No hay escritos para editar</div>
+                        <div class="empty-state-subtext">
+                            El scriptorium está vacío, esperando tus palabras
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            editList.innerHTML = '';
+            
+            writings.forEach(writing => {
+                const item = document.createElement('div');
+                item.className = 'edit-item';
+                item.innerHTML = `
+                    <div class="edit-item-title">${writing.title}</div>
+                    <div class="edit-actions">
+                        <button class="edit-btn" onclick="editWriting(${writing.id})">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="delete-btn" onclick="deleteWriting(${writing.id})">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                    </div>
+                `;
+                editList.appendChild(item);
+            });
+        }
+
+        function editWriting(id) {
+            const writing = writings.find(w => w.id === id);
+            if (!writing) return;
+            
+            // Rellenar el formulario con los datos
+            document.getElementById('writingId').value = writing.id;
+            document.getElementById('writingTitle').value = writing.title;
+            document.getElementById('writingSource').value = writing.source;
+            document.getElementById('writingCategory').value = writing.category;
+            document.getElementById('writingImage').value = writing.image || '';
+            document.getElementById('writingContent').value = writing.content;
+            
+            // Actualizar vista previa de imagen
+            previewImage();
+            
+            // Cambiar el botón de envío
+            isEditing = true;
+            document.getElementById('submitBtn').textContent = 'Actualizar Memoria';
+            document.getElementById('cancelEditBtn').style.display = 'block';
+            
+            // Cambiar a la pestaña de creación/edición
+            switchAdminTab('create');
+            
+            // Enfocar el primer campo
+            document.getElementById('writingTitle').focus();
+        }
+
+        // Añadir keyframes para la animación de confirmación
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+                20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
